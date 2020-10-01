@@ -3,12 +3,99 @@
 
 #define MaxSize 50
 
+
 typedef struct{
     char data[MaxSize];
     int top;
 }SqStack;
 
 
+typedef struct{
+	char data[MaxSize];
+	int front, rear;
+	int tag = 0;
+}SqQueue;
+
+
+void InitQueue(SqQueue &Q){
+	Q.front = 0;
+	Q.rear = 0;
+}
+
+
+bool QueueEmpty(SqQueue &Q){
+	if(Q.front == Q.rear){
+		return true;
+		}
+	else{
+		return false;
+		}
+}
+
+
+bool EnQueue(SqQueue &Q, char x){
+	if(Q.rear == MaxSize){
+		Q.data[Q.rear] = x;
+		Q.rear++;
+		return true;
+		}	
+	return false;
+}
+
+
+bool DeQueue(SqQueue &Q, char &x){
+	if(Q.front >= 0){
+		x = Q.data[Q.front];
+		Q.front++;
+		return true;
+		}
+	else{
+		return false;
+		}
+}
+
+
+bool EnQueue_tag(SqQueue &Q, int x){
+	/*
+	not test yet ...
+	*/
+
+	if(Q.tag == 1){
+		return false;
+		}
+	else{
+		Q.rear = (Q.rear + 1) % MaxSize;
+		Q.data[Q.rear] = x;
+		Q.tag = 0;
+		}
+}
+
+bool DeQueue_tag(SqQueue &Q, int &x){
+	/*
+	not test yet ...
+	*/
+
+	if(Q.rear = Q.front && Q.tag == 1){
+		return false;
+		}
+	else{
+		x = Q.data[Q.front];
+		Q.front = (Q.front + 1) % MaxSize;
+		if(Q.front == Q.rear){
+			Q.tag = 1;
+			}
+		}
+}
+
+
+bool GetHead(SqQueue Q, int &x){
+	if(QueueEmpty(Q)){
+		return false;
+		}
+	else{
+		x = Q.data[Q.front];
+		}
+}
 
 
 void InitStack(SqStack &S){
@@ -177,6 +264,28 @@ bool if_centralsymmetry(LinkList head){
 }
 
 
+
+void reverse_the_Queue(SqQueue &Q, SqStack &S){
+	/*
+	not test yet ...
+	*/
+	char x;
+	while(QueueEmpty(Q) != true){
+		DeQueue(Q, x);	
+		Push(S, x);
+	}
+
+	while(StackEmpty(S) != true){
+		Pop(S, x);
+		EnQueue(Q, x);
+	}
+}
+
+
+
+
+
+
 int main(){
 
     char *str;
@@ -213,6 +322,11 @@ int main(){
 	else{
 		printf("is_not_centraksymmetry\n");
 	}
+
+	printf("test SqQueue");
+
+
+	
 
 }
 
