@@ -67,6 +67,7 @@ bool EnQueue_tag(SqQueue &Q, int x){
 		Q.rear = (Q.rear + 1) % MaxSize;
 		Q.data[Q.rear] = x;
 		Q.tag = 0;
+		return true;
 		}
 }
 
@@ -84,6 +85,7 @@ bool DeQueue_tag(SqQueue &Q, int &x){
 		if(Q.front == Q.rear){
 			Q.tag = 1;
 			}
+		return true;
 		}
 }
 
@@ -94,6 +96,7 @@ bool GetHead(SqQueue Q, int &x){
 		}
 	else{
 		x = Q.data[Q.front];
+		return true;
 		}
 }
 
@@ -281,6 +284,91 @@ void reverse_the_Queue(SqQueue &Q, SqStack &S){
 	}
 }
 
+bool if_matched(char str[]){
+	/*	
+	not test yet ...
+	{} [] ()
+	*/
+	SqStack *S = (SqStack *)malloc(sizeof(SqStack));
+
+	int k = 0;
+
+	char tmp;
+
+	while(str[k] != '\0'){
+		switch(str[k]){
+			case '(':
+				Push(*S, str[k]);
+			case '[':
+				Push(*S, str[k]);
+			case '{':
+				Push(*S, str[k]); 
+			case ')':
+				Pop(*S, tmp);
+				if(tmp != '('){
+					return false;
+				}
+				break;
+			case ']':
+				Pop(*S, tmp);
+				if(tmp != '['){
+					return false;					
+				}
+				break;
+			case '}':
+				Pop(*S, tmp);
+				if(tmp != '{'){
+					return false;
+				}
+				break;
+			default:
+				break;
+		}	
+		k++;
+	}
+
+	if(!StackEmpty(*S)){
+		printf("not matched!\n");
+		return false;
+	}
+	else{
+		printf("is matched");
+		return true;
+	}
+}
+
+double p(int n ,double x){
+	/*
+	not test yet ...
+	*/
+	double p0 = 1;
+	double p1 = 2*x;
+
+	struct stack{
+		int no;
+		double val;
+	}s[MaxSize];
+
+	int top = -1, i;
+
+
+	for(int i = n;i>=2;i--){
+		top++;
+		s[top].no = i;
+	}
+	while(top >= 0){
+		s[top].val = 2*x*p1 - 2 * (s[top].no - 1) *p0;
+		p0 = p1;
+		p1 = s[top].val;
+		top --;
+	}
+	if(n == 0){
+		return p0;
+	}
+	else{
+		return p1;
+	}
+} 
 
 
 
