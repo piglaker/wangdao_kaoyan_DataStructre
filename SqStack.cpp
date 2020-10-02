@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <SString.h>
 
 #define MaxSize 50
 
@@ -350,7 +351,6 @@ double p(int n ,double x){
 	}s[MaxSize];
 
 	int top = -1, i;
-
 
 	for(int i = n;i>=2;i--){
 		top++;
