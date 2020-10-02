@@ -17,6 +17,9 @@ typedef struct{
 
 
 void StrAssign(SString &T, char chars[]){
+	/*
+	assgin chars to T
+	*/
 	int k = 0;
 	while(chars[k] != '\0'){
 		T.ch[k] = chars[k];
@@ -27,6 +30,11 @@ void StrAssign(SString &T, char chars[]){
 
 
 void StrSopy(SString &T, SString S){
+	/*
+	copy from S to T;
+	not test yet ...
+	*/
+
 	for(int i = 0;i < S.length; i++){
 		T.ch[i] = S.ch[i];
 	}
@@ -34,6 +42,9 @@ void StrSopy(SString &T, SString S){
 
 
 bool StrCompare(SString S, SString T){
+	/*
+	
+	*/
 	int length_s = S.length;
 	int length_t = T.length;
 
@@ -43,7 +54,7 @@ bool StrCompare(SString S, SString T){
 		}
 	}	 	
 	if(length_s == length_t){
-	return true;
+		return true;
 	}
 	else{
 		return false;
@@ -57,6 +68,10 @@ int StrLength(SString S){
 
 
 void SubString(SString &sub,SString S,  int pos, int len){
+	/*
+		assign the S[pos] - [len -1] to sub
+		equal to python "sub = S[pos:len]"
+	*/
 	for(int i = pos;i < pos + len;i++){
 		sub.ch[i] = S.ch[i];
 		sub.length++;
@@ -65,6 +80,10 @@ void SubString(SString &sub,SString S,  int pos, int len){
 
 
 void concat(SString &T, SString S1, SString S2){
+	/*
+	T = S1 + S2  
+	not test yet ...
+	*/
 	int length1 = S1.length;
 	int length2 = S2.length;
 
@@ -81,6 +100,9 @@ void concat(SString &T, SString S1, SString S2){
 
 
 int index(SString S, SString T){
+	/*
+	whereis T in S
+	*/
 	int i = 0, length_s = StrLength(S), length_t = StrLength(T);
 	
 	SString *sub = new SString;
@@ -110,6 +132,61 @@ void DestroyString(SString &S){
 	free(&S);
 }
 
+
+void get_next(int next[], char array[], int length){
+	/*
+	
+	i:point to the next-update val in next[]
+
+	next : next = {{ak} | k <- [0-n] }
+			[-1] [0] [0 1 2 3] [1] [1 2 3 4 5]
+					
+					{ -1 , next[next[next]]	 = 1;
+		next[i+1] = { next[i] + 1, array[i] = array[j] , j = next[i] + 1;
+					{ 0 , others
+	*/
+	int i = 0 , j = -1;
+	
+	for(int i = 0;i < length; i++){
+		next[i] = -1;
+	}
+	
+	while(i < length){
+		if(j == -1 || array[i] == array[j]){
+				i++;
+				j++;
+				next[i] = j;
+		}
+		else{
+			j = next[j];
+		}
+	}
+
+}
+
+bool kmp(SString S, SString T, int next[]){
+	int i = 0, j = -1;
+
+	while(i != S.length && j != T.length){
+		if(j == -1 || S.ch[i] == T.ch[j]){
+			i++;
+			j++;
+		}
+		else{
+			j = next[j];
+		}
+	}
+
+	if(j == T.length){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+
+
 //------------------------------------------
 
 
@@ -125,16 +202,43 @@ void test(SString S){
 //------------------------------------------
 
 
+
 int main(){
 
-	char zero[7] = {'a', 'b','c','d', 'e', 'f', 'g'} ;
+	char zero[13] = {'a', 'a', 'b', 'a', 'a', 'b', 'a', 'a', 'b', 'a', 'a', 'c', '\0'} ;
+
+	char p[7] = {'a', 'a', 'b', 'a', 'a', 'c', '\0'};
 
 	SString *S = new SString;
 
+	SString *T = new SString;
+
 	StrAssign(*S, zero);
 
+	StrAssign(*T, p);
+	
 	test(*S);
 
+	test(*T);
+		
+	int *next = new int[6];
+
+	get_next(next, p, 6);
+
+	for(int i = 0 ;i < 6;i++){
+		printf("%d ", next[i]);
+	}
+	
+	printf("\n");
+
+	bool is_match = kmp(*S, *T, next);
+
+	if(is_match){
+		printf("is_match\n");
+	}
+	else{
+		printf("not_mtach\n");
+	}
 
 }
 
