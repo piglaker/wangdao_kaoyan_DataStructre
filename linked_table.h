@@ -16,6 +16,7 @@ typedef struct LNode{
 	struct LNode *next;
 }LNode, *LinkList;
 
+
 LinkList List_HeadInsert(LinkList &L){
 	LNode *s; int x;
 	L = (LinkList)malloc(sizeof(LNode));
@@ -30,6 +31,7 @@ LinkList List_HeadInsert(LinkList &L){
 	}	
 	return L;
 }
+
 
 LinkList List_TailInsert(LinkList &L){
 	int x;
@@ -46,6 +48,7 @@ LinkList List_TailInsert(LinkList &L){
 	r->next = NULL;
 	return 	L;
 }
+
 
 LNode *GetElem(LinkList L, int i){
 	int j = 1;
