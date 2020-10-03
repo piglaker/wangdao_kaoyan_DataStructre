@@ -13,7 +13,7 @@ typedef struct{
 typedef struct{
 	char data[MaxSize];
 	int front, rear;
-	int tag = 0;
+	int tag;
 }SqQueue;
 
 
@@ -76,7 +76,7 @@ bool DeQueue_tag(SqQueue &Q, int &x){
 	not test yet ...
 	*/
 
-	if(Q.rear = Q.front && Q.tag == 1){
+	if(Q.rear == Q.front && Q.tag == 1){
 		return false;
 		}
 	else{

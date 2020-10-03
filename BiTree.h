@@ -57,19 +57,79 @@ void PostOrder_SE(BiTree T){
 typedef struct{
 	BiTree data[MaxSize];
 	int front, rear;
-	int tag = 0;
+	int tag;
 }SqQueue_bt;
 
 SqQueue_bt Q;
 
+typedef struct{
+    BiTree data[MaxSize];
+    int top;
+}SqStack_bt;
 
-void InitQueue_bt(SqQueue_bt &Q){
+
+
+void InitStack(SqStack_bt &S){
+    S.top = -1;
+}
+
+bool StackEmpty(SqStack_bt S){
+    if(S.top == -1){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Push(SqStack_bt &S, BiTree x){
+    if(S.top + 1 == MaxSize ){
+        return false;
+    }
+    else{
+        S.top++;
+        S.data[S.top] = x;
+        return true;
+    }
+}
+
+
+bool Pop(SqStack_bt &S, BiTree &x){
+    if(S.top == -1){
+        return false;
+    }
+    else{    
+    x = S.data[S.top];
+    S.top--;
+    return true;
+    }
+}
+
+
+bool GetTop(SqStack_bt S, BiTree &x){
+    if(S.top == -1){
+        return false;
+    }
+    else{
+        x = S.data[S.top];
+        return true;
+    }
+}
+
+
+void DestroyStack(SqStack_bt &S){
+    free(S.data);
+    free(&S);
+}
+
+
+void InitQueue(SqQueue_bt &Q){
 	Q.front = 0;
 	Q.rear = 0;
 }
 
 
-bool QueueEmpty_bt(SqQueue_bt &Q){
+bool QueueEmpty(SqQueue_bt &Q){
 	if(Q.front == Q.rear){
 		return true;
 		}
@@ -79,7 +139,7 @@ bool QueueEmpty_bt(SqQueue_bt &Q){
 }
 
 
-bool EnQueue_bt(SqQueue_bt &Q, BiTree x){
+bool EnQueue(SqQueue_bt &Q, BiTree x){
 	if(Q.rear == MaxSize){
 		Q.data[Q.rear] = x;
 		Q.rear++;
@@ -89,7 +149,7 @@ bool EnQueue_bt(SqQueue_bt &Q, BiTree x){
 }
 
 
-bool DeQueue_bt(SqQueue_bt &Q, BiTree &x){
+bool DeQueue(SqQueue_bt &Q, BiTree &x){
 	if(Q.front >= 0){
 		x = Q.data[Q.front];
 		Q.front++;
@@ -102,17 +162,17 @@ bool DeQueue_bt(SqQueue_bt &Q, BiTree &x){
 
 
 void LevelOrder(BiTree T){
-	InitQueue_bt(Q);
+	InitQueue(Q);
 	BiTree p;
-	EnQueue_bt(Q, T);
-	while(!QueueEmpty_bt(Q)){
-		DeQueue_bt(Q, p);	
+	EnQueue(Q, T);
+	while(!QueueEmpty(Q)){
+		DeQueue(Q, p);	
 		visit(p);
 		if(p->lchild != NULL){
-			EnQueue_bt(Q, p->lchild);
+			EnQueue(Q, p->lchild);
 		}
 		if(p->rchild != NULL){
-			EnQueue_bt(Q, p->rchild);
+			EnQueue(Q, p->rchild);
 		}
 	}	
 }
@@ -150,3 +210,272 @@ void CreateThread(ThreadTree T){
 		pre->rtag = 1;
 	}
 }
+
+SqStack_bt S;
+
+void PostOrder_no(BiTree T){
+	InitStack(S);
+	BiTree p = T;
+	BiTree r = NULL;
+	while( p || StackEmpty(S)){
+		if(p){
+			Push(S, p);
+			p = p->lchild;
+		}
+		else{
+			GetTop(S, p);
+			if(p->rchild && p->rchild != r){
+				p = p->rchild;
+				Push(S, p);
+				p = p->lchild;
+			}
+			else{
+				Pop(S, p);
+				visit(p);
+				r = p;
+				p = NULL;
+			}
+		}
+	}
+}
+
+
+void InvertLevel(BiTree bt){
+	SqStack_bt s; SqQueue_bt Q;
+	BiTree p;
+	if(bt != NULL){
+		InitStack(S);
+		InitQueue(Q);
+		EnQueue(Q, bt);
+		while(QueueEmpty(Q) != false){
+			DeQueue(Q, p);
+			Push(s, p);
+			if(p->lchild){
+				EnQueue(Q, p->lchild);
+			}
+			if(p->rchild){
+				EnQueue(Q, p->rchild);
+			}
+		}
+	
+		while (StackEmpty(s) != false){
+			Pop(s, p);
+			visit(p);
+		}
+	}
+}
+
+
+int Btdepth(BiTree T){
+	if(!T){
+		return 0;
+	}
+
+	int front = -1, rear = -1;
+
+	int last = 0, level = 0;
+
+	BiTree Q[MaxSize];
+
+	BiTree p;
+
+	Q[++rear] = T;
+
+	while(front < rear){
+		p = Q[++front];
+		if(p->lchild){
+			Q[++rear] = p->lchild;
+		}
+		if(p->rchild){
+			Q[++rear] = p->rchild;
+		}
+		if(front == last){
+			level++;
+			last = rear;
+		}
+	}
+	return level;
+}
+
+
+int Btdepth2(BiTree T){
+	if(T == NULL){
+		return 0;
+	}
+	int ldep = Btdepth2(T->lchild);
+
+	int rdep = Btdepth2(T->rchild);
+
+	return (ldep > rdep) ? (ldep + 1) : (rdep + 1);
+}
+
+int num_of_nodes = 8;
+
+BiTree get_node(int val){
+	BiTNode *node = (BiTNode *)malloc(sizeof(BiTNode));
+	node->data = val;
+	return node;
+}
+
+
+BiTree build_BT_from_Pre_In(int pre[], int in[], int pre_0, int pre_end, int in_0, int in_end){
+	pre_0 = 0;
+	in_0 = 0;
+	pre_end = num_of_nodes;
+	in_end = num_of_nodes;	
+
+	BiTNode *root = get_node(pre[pre_0]);
+
+	int i;
+
+	for(i = in_0;i != pre[pre_0];i++);
+
+	int llen = i - in_0;
+
+	int rlen = in_end - i;
+
+	if(llen != 0)
+		root->lchild = build_BT_from_Pre_In(pre, in, pre_0+1, pre_0 + llen, in_0, in_0 + llen - 1);
+	else
+		root->lchild = NULL;
+	
+	if(rlen != 0)
+		root->rchild = build_BT_from_Pre_In(pre, in, pre_end - rlen + 1, pre_end, in_end - rlen + 1, in_end);
+	else
+		root->rchild = NULL;
+
+	return root;	
+}
+
+
+bool is_complete_BT(BiTree T){
+	InitQueue(Q);
+
+	if(!T)
+		return 1;
+	
+	EnQueue(Q, T);
+
+	BiTree p;
+
+	while(!QueueEmpty(Q)){
+		DeQueue(Q, p);
+		if(p){
+			EnQueue(Q, p->lchild);
+			EnQueue(Q, p->rchild);
+		}
+		else{
+			while(!QueueEmpty(Q)){
+				DeQueue(Q, p);
+				if(p){
+					return false;
+				}
+			}
+		}
+
+	}
+
+	return true;
+}
+
+
+
+int count_full_node(BiTree T){
+	InitQueue(Q);
+	BiTree p;
+
+	EnQueue(Q, T);
+
+	int count = 0;
+
+	while(!QueueEmpty(Q)){
+		DeQueue(Q, p);
+		if(p){
+			if(p->lchild && p->lchild){
+				count++;
+			}
+		}
+		if(p->lchild){
+			EnQueue(Q,p->lchild);
+		}
+		if(p->rchild){
+			EnQueue(Q, p->rchild);
+		}
+	}
+	return count;
+}
+
+
+void swap(BiTree &T){
+	BiTree tmp = T->lchild;
+	T->lchild = T->rchild;
+	T->rchild = tmp;
+}
+
+
+void Mirror(BiTree &T){
+	Mirror(T->lchild);
+	Mirror(T->rchild);
+	swap(T);
+}
+
+
+void PreOrder_k(BiTree T, int k){
+	while(T!=NULL){
+		if(k==0){
+			visit(T);
+		}
+		PreOrder_k(T->lchild, k-1);
+		PreOrder_k(T->rchild, k-1);
+	}
+}
+
+SqQueue_bt to_free;
+
+
+
+void free_x_in_tree(BiTree T, char x){
+	InitQueue(to_free);
+
+	InitQueue(Q);
+
+	BiTree p;
+
+	EnQueue(Q, T);
+
+	while(!QueueEmpty(Q)){
+		DeQueue(Q, p);
+		if(p->data == x){
+			EnQueue(to_free, p);
+		}
+		if(p->lchild){
+			EnQueue(Q, p->lchild);
+		}
+		if(p->rchild){
+			EnQueue(Q, p->rchild);
+		}
+	}
+
+	while(!QueueEmpty(to_free)){
+		DeQueue(Q, p);
+		if(p->lchild){
+			EnQueue(to_free, p->lchild);
+		}
+		if(p->rchild){
+			EnQueue(to_free, p->rchild);
+		}
+		free(p);
+	}
+}
+
+
+
+void visit_father_x(BiTree T, char x){
+
+}
+
+
+
+
+
+

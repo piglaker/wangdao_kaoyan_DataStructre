@@ -7,9 +7,6 @@
 #include "SString.h"
 
 
-#define MaxSize 50
-
-
 int main(){
 
     char *str;
