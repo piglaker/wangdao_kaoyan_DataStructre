@@ -469,10 +469,256 @@ void free_x_in_tree(BiTree T, char x){
 }
 
 
+typedef struct{
+	BiTree t;
+	int tag;
+}stack;
+
+stack s[20];
+
+int top;
 
 void visit_father_x(BiTree T, char x){
-
+	top = 0 ;
+	
+	while(T != NULL || top >0){
+		while(T != NULL && T->data != x){
+			s[++top].t = T;
+			s[top].tag = 0;
+			T = T->lchild;
+		}
+		if(T->data == x){
+			printf("get it !");
+			for(int i = 0; i <= top;i++){
+				printf("%d", s[i].t->data);
+				exit(1);
+			}
+		}
+		while(top != 0 && s[top].tag == 1){
+			top--;
+		}
+		if(top != 0){
+			s[top].tag = 1;
+			T = s[top].t->rchild;
+		}
+	}
 }
+
+
+
+SqQueue_bt Qu;
+
+
+void free_SqQueue(SqQueue_bt &Q){
+	BiTree p;
+	while(!QueueEmpty(Q)){
+		DeQueue(Q, p);
+	}
+}
+
+
+void SqQueue_DeepCopy(SqQueue_bt &Q0, SqQueue_bt &Q1){
+	BiTree tmp_copy;
+	while(!QueueEmpty(Q)){
+		DeQueue(Q0, tmp_copy);
+		EnQueue(Q1, tmp_copy);
+	}
+}
+
+
+int BTWidth(BiTree b){
+
+	int count = 0;
+
+	int max = 0;
+
+	BiTree p;
+	
+	InitQueue(Qu);
+	
+	EnQueue(Qu, b);
+
+	SqQueue_bt next_Queue;
+
+	InitQueue(next_Queue);
+
+	while(!QueueEmpty(Qu)){
+		DeQueue(Qu, p);
+		
+		count++;
+		
+		if(p){
+			if(p->lchild){
+				EnQueue(next_Queue, p->lchild);
+			}
+			if(p->rchild){
+				EnQueue(next_Queue, p->rchild);
+			}
+		}
+		else{
+			if(count > max){
+				max = count;
+				count = 0;
+			}
+			SqQueue_DeepCopy(next_Queue, Qu);
+		}
+	}
+	return max;
+}
+
+
+
+
+void pre2post_fullBT(int pre[], int l1, int h1, int post[], int l2, int h2){
+	int half;
+	if(h1 >= h2){
+		post[h2] = pre[l1];
+		pre2post_fullBT(pre, l1+1, h1/2, post, l2, h2/2);
+		pre2post_fullBT(pre, h2/2, h2, post, h2/2, h2);
+	}
+}
+
+
+typedef struct LinkedNode_bt{
+	BiTree data;
+	struct LinkedNode_bt *next;
+}LinkedNode_bt, *LinkList_bt;
+
+SqQueue_bt Q16;
+
+LinkList_bt BiTree2LinkList(BiTree T){
+	
+	LinkList_bt head = new LinkedNode_bt;
+
+	LinkList_bt p = head;
+
+	InitQueue(Q16);
+
+	EnQueue(Q16, T);
+
+	BiTree tmp_node;
+
+	while(!QueueEmpty(Q16)){
+		
+		DeQueue(Q16, tmp_node);
+
+		LinkList_bt new_node = new LinkedNode_bt;
+
+		new_node->data = tmp_node;
+
+		p->next = new_node;
+
+		p = new_node;
+
+		if(tmp_node){
+			if(tmp_node->lchild){
+				EnQueue(Q16, tmp_node->lchild);
+			}
+			if(tmp_node->rchild){
+				EnQueue(Q16, tmp_node->rchild);
+			}
+		}
+	}
+
+	return head;
+}
+
+
+bool if_similar(BiTree A, BiTree B){
+
+	if( ((A) ? 1:0) ^ ((B) ? 1:0)){
+		return false;
+	}
+
+	bool lf = ((A->lchild) ? 1:0 )^ ((B->lchild) ? 1:0);
+	
+	bool rf = ((A->rchild) ? 1:0) ^ ((B->rchild) ? 1:0);
+
+	if(!lf && !rf){
+		return if_similar(A->lchild, B->lchild) && if_similar(A->rchild, B->rchild);
+	}
+	else{
+		return false;
+	}
+}
+
+
+//18:pass
+
+typedef struct weighted_BiTNode{
+	int weight;
+	struct weighted_BiTNode *lchild, *rchild;
+}weighted_BiTNode, *weighted_BiTree;
+
+int depth = 0;
+
+int get_WPL(weighted_BiTree root){
+	if(!root){
+		return 0;
+	}
+	int k = root->weight;
+	depth++;
+	return k + get_WPL(root->lchild) * depth + get_WPL(root->rchild) * depth;
+}
+
+
+void BtreeToExp(BiTree root, int deep){
+	if(root==NULL)return;
+	else if(root->lchild == NULL && root ->rchild == NULL)
+		printf("%c", root->data);
+	else{
+		if(deep>1)printf("(");
+		BtreeToExp(root->lchild, deep+1);
+		printf("%c", root->data);
+		BtreeToExp(root->lchild, deep + 1);
+		if(deep > 1)printf(")");
+	}
+}
+
+
+void BtreeToE(BiTree root){
+	BtreeToExp(root, 1);
+}
+
+typedef struct{
+	int data;
+	int parent;
+}PTNode;
+
+
+typedef struct{
+	PTNode nodes[MaxSize];
+	int n;
+}PTree;
+
+
+typedef struct{
+	int data;
+	struct CSNode *firstchild, *nextsibing;
+}CSNode, *CSTree;
+
+#define size 100;
+
+int UFSets[MaxSize];
+
+void Initial(int S[]){
+	for(int i = 0;i<size;i++){
+		S[i] = -1;
+	}
+}
+
+int Find(int S[], int x){
+	while(S[x] > 0){
+		x = S[x];
+	}
+	return x;
+}
+
+void Union(int S[], int Root1, int Root2){
+	S[Root2] = Root1;
+}
+
+
 
 
 
