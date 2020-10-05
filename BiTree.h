@@ -692,7 +692,7 @@ typedef struct{
 }PTree;
 
 
-typedef struct{
+typedef struct CSNode{
 	int data;
 	struct CSNode *firstchild, *nextsibing;
 }CSNode, *CSTree;
@@ -702,10 +702,11 @@ typedef struct{
 int UFSets[MaxSize];
 
 void Initial(int S[]){
-	for(int i = 0;i<size;i++){
+	for(int i = 0;i < 100;i++){
 		S[i] = -1;
 	}
 }
+
 
 int Find(int S[], int x){
 	while(S[x] > 0){
@@ -714,8 +715,81 @@ int Find(int S[], int x){
 	return x;
 }
 
+
 void Union(int S[], int Root1, int Root2){
 	S[Root2] = Root1;
+}
+
+
+typedef struct BSTNode{
+	int data;
+	struct BSTNode *lchild, *rchild;	
+}BSTNOde, *BSTree;
+
+BSTNode *BST_search(BSTree T, int k){
+	while(T != NULL && k != T->data){
+		if(k > T->data)T = T->rchild;
+		else T = T->lchild;
+	}
+	return T;
+}
+
+int BST_insert(BSTree T, int k){
+	if(T == NULL){
+		T = new BSTNode;
+		T->data = k;
+		T->lchild = NULL;
+		T->rchild = NULL;
+		return 1;
+	}
+	else if(k == T->data){
+		return 0;
+	}
+	else if (k < T->data){
+		return BST_insert(T->lchild, k);
+	}
+	else
+		return BST_insert(T->rchild, k);
+}
+
+
+void Creat_BSTree(BSTree T, int array[], int n){
+	T = NULL;
+	int i = 0;
+	while(i < n){
+		BST_insert(T, array[i]);
+		i++;
+	}
+}
+
+//---------------------------------------------
+//utils for BSTree 
+
+int postOrder_tmp_count = 0;
+
+void postOrder(BSTree T, int post[], int postOrder_tmp_count){
+	while(T != NULL){
+		postOrder(T->lchild, post, postOrder_tmp_count);
+		post[postOrder_tmp_count] = T->data;
+		postOrder_tmp_count++;
+		postOrder(T->rchild, post, postOrder_tmp_count);
+	}
+}
+
+//-------------------------------------------
+
+bool if_BSTree(BSTree T){
+	
+	int post[50];
+
+	postOrder(T, post, postOrder_tmp_count);
+
+	for(int i = 0;i< postOrder_tmp_count - 1 ;i++){
+		if(post[i] > post[i + 1]){
+			return false;
+		}
+	}
+	return true;
 }
 
 
