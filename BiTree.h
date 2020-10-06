@@ -726,6 +726,7 @@ typedef struct BSTNode{
 	struct BSTNode *lchild, *rchild;	
 }BSTNOde, *BSTree;
 
+
 BSTNode *BST_search(BSTree T, int k){
 	while(T != NULL && k != T->data){
 		if(k > T->data)T = T->rchild;
@@ -791,6 +792,232 @@ bool if_BSTree(BSTree T){
 	}
 	return true;
 }
+
+
+int depth_node = 0;
+
+int get_node_epth(BSTree T, int x, int depth_node){
+	while(T!=NULL){
+		if(T->data == x){
+			return depth_node;
+		}
+		else if(x > T->data){
+			T = T->rchild;
+			depth_node++;
+		}
+		else{
+			T = T->lchild;
+			depth_node++;
+		}
+	}
+	return depth_node;
+}
+
+
+int pow(int x, int t){
+	int reg = 1;
+	for(int k = 0;k < t;k++){
+		reg *= x;
+	}
+	return reg;
+}
+
+typedef struct{
+	BSTree data[MaxSize];
+	int front, rear;
+	int tag;
+}SqQueue_bst;
+
+bool EnQueue(SqQueue_bst &Q, BSTree x){
+	if(Q.rear == MaxSize){
+		Q.data[Q.rear] = x;
+		Q.rear++;
+		return true;
+		}	
+	return false;
+}
+
+
+bool DeQueue(SqQueue_bst &Q, BSTree &x){
+	if(Q.front >= 0){
+		x = Q.data[Q.front];
+		Q.front++;
+		return true;
+		}
+	else{
+		return false;
+		}
+}
+
+void InitQueue(SqQueue_bst &Q){
+	Q.front = 0;
+	Q.rear = 0;
+}
+
+
+bool QueueEmpty(SqQueue_bst &Q){
+	if(Q.front == Q.rear){
+		return true;
+		}
+	else{
+		return false;
+		}
+}
+
+
+void SqQueue_DeepCopy(SqQueue_bst &Q0, SqQueue_bst &Q1){
+	BSTree tmp_copy;
+	while(!QueueEmpty(Q)){
+		DeQueue(Q0, tmp_copy);
+		EnQueue(Q1, tmp_copy);
+	}
+}
+
+
+
+bool if_balanced(BSTree T){
+
+	SqQueue_bst Q;
+	
+	InitQueue(Q);
+
+	EnQueue(Q, T);
+
+	bool is_full = true;
+
+	int depth = 1;
+
+	BSTree p;
+
+	SqQueue_bst next_Q;
+
+	InitQueue(Q);
+
+	int count;
+
+	while(!QueueEmpty(Q)){
+		
+		DeQueue(Q, p);
+
+		count++;
+
+		if(p->lchild){
+			EnQueue(next_Q, p->lchild);
+		}
+		if(p->rchild){
+			EnQueue(next_Q, p->rchild);
+		}
+
+		if(QueueEmpty(Q)){
+			if(!is_full && count > 0){
+				return false;
+			}
+			
+			if(count < pow(2, depth)){
+				is_full = false;
+			}
+			else{
+				is_full = true;
+			}
+			SqQueue_DeepCopy(next_Q, Q);
+			count = 0;
+			depth++;
+		}
+	}
+	return true;
+}
+
+
+int get_min_BST(BSTree T){
+	while(T){
+		T = T->lchild;
+	}
+	return T->data;
+}
+
+int get_max_BST(BSTree T ){
+	while(T){
+		T = T->rchild;
+	}
+	return T->data;
+}
+
+
+void screch_x(BSTree T, int k){
+
+	if(T == NULL){
+		return ;
+	}
+	if(T->rchild != NULL){
+		screch_x(T->rchild, k);
+	}
+	if(T->data >= k){
+		printf("%d", T->data);
+	}
+	if(T->lchild != NULL){
+		screch_x(T->lchild, k);
+	}
+}
+
+
+void get_min_2(int arr[], int length, int ans[]){
+	int min_main = 999;
+	int min = 999;
+	int tmp = 0;
+	for(int i = 0;i < length; i++){
+		if(arr[i] < min_main){
+			tmp = min_main;
+			min_main = arr[i];
+			min = tmp;
+		}
+	}
+	ans[0] = min_main;
+	ans[1] = min;
+}
+
+/*
+// not finished yet ...
+BiTree get_huffman_tree(int arr[], int length){
+	
+	int i = 2;
+	while(){
+	int p[] = new int[2];
+	get_min_2(arr, length, p);
+	
+	
+	}
+}
+*/
+
+
+
+typedef struct BSTNode_s{
+	int data;
+	struct BSTNode_s *lchild, *rchild;
+	int count;
+}BSTNode_s, *BSTree_s;
+
+
+BSTree_s Search_k_min(BSTree_s T, int k){
+	if(k < 1 || k > T->count)return NULL;
+	if(T->lchild == NULL){
+		if(k == 1) return T;
+		else return Search_k_min(T->rchild, k-1);
+	}
+	else{
+		if(T->lchild->count == k-1)return T;
+		if(T->lchild->count > k - 1)return Search_k_min(T->lchild, k);
+		if(T->lchild->count < k - 1)
+			return Search_k_min(T->rchild, k - (T->lchild->count+1));
+	}
+}
+
+
+
+
+
+
+
 
 
 
