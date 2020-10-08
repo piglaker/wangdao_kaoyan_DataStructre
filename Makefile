@@ -8,5 +8,6 @@ SString:SString.cpp
 	g++ SString.cpp -o SString.out
 BiTree:BiTree.cpp
 	g++ BiTree.cpp -o BiTree.out
-
+Graph:Graph.cpp
+	g++ Graph.cpp -o Graph.out
 
