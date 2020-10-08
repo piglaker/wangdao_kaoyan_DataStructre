@@ -1,11 +1,17 @@
 #include <iostream>
 #include <stdlib.h>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <map>
+#include <set>
+
 
 #define MaxVertexNum 100
 #define TOP 2147483647
 #define MaxSize 100
 
-typedef char VertexType
+typedef char VertexType;
 typedef int EdgeType;
 
 typedef struct{
@@ -31,7 +37,7 @@ typedef struct{
 }ALGraph;
 
 
-bool Adjacent(G, x, y){
+bool Adjacent(MGraph G, int x,int y){
     /*
 
     */
@@ -39,16 +45,16 @@ bool Adjacent(G, x, y){
 }
 
 
-int Neighbors(G, x){
+int Neighbors(MGraph G, int x){
     return 0;    
 }
 
-void InsertVertex(G,x){
+void InsertVertex(MGraph G,int x){
 
 }
 
 
-void DeleteVertex(G, x){
+void DeleteVertex(MGraph G, int x){
 
 }
 
@@ -57,14 +63,18 @@ int M = 6;
 int N = 6;
 
 void Convert(ALGraph &G, int arcs[M][N]){
-    for(i = 0;i<n;i++){
-        p = (G->v[i]).first;
-        while(p!=NULL){
-            arcs[i][p->data] = 1;
-            p = p->nextarc;
-        }
-    }
+
 }
+
+int FisrtNeighbor(Graph G, int u){
+
+    return 0;
+}
+
+int NextNeighbor(Graph G, int u, int w){
+    return 0;
+}
+
 
 //---------------------------------------
 typedef struct{
@@ -107,26 +117,26 @@ bool QueueEmpty(SqQueue &Q){
 		}
 }
 
+SqQueue Q;
+
 //-----------------------------------------
-
-
 
 bool visited[MaxVertexNum];
 
 void BFSSerch(Graph G){
-    for(int i = 0;i < G.vexnum;i++){
-        visited[i] = false;
-    }
-    InitQueue(Q);
-}
 
+}
 
 void visit(int v){
 
 }
 
 
-int FisrtNeighbor(){
+int FisrtNeighbor(ALGraph G, int u){
+    return 0;
+}
+
+int NextNeighbor(ALGraph G, int u, int w){
 
     return 0;
 }
@@ -157,15 +167,27 @@ void BFS_MIN_Distance(Graph G, int u){
     for(int i = 0;i < G.vexnum;i++){
         d[i] = TOP;
     }
+    InitQueue(Q);
     visited[u] = true; d[u] = 0;
     while(!QueueEmpty(Q)){
         DeQueue(Q, u);
-        for(int w = FisrtNeighbor)(G, u); w >= 0;w = NextNeighbor(G, u, w)){
+        for(int w = FisrtNeighbor(G, u); w >= 0;w = NextNeighbor(G, u, w)){
             if(!visited[w]){
                 visited[w] = true;
                 d[w] = d[u] + 1;
                 EnQueue(Q, w);
             }
+        }
+    }
+}
+
+void DFS(Graph G, int v){
+    //visit(v);
+    visited[v] = true;
+
+    for(int w = FisrtNeighbor(G, v); w >= 0; w = NextNeighbor(G, v, w)){
+        if(!visited[w]){
+            DFS(G, w);
         }
     }
 }
@@ -180,24 +202,16 @@ void DFSTraverse(Graph G){
 }
 
 
-void DFS(Graph G, int v){
-    //visit(v);
-    visited[v] = true;
 
-    for(int w = FisrtNeighbor(G, v); w >= 0; w = NextNeighbor(G, v, w)){
-        if(!visited[w]){
-            DFS(G, w);
-        }
-    }
-}
 
 bool isTree(Graph G){
+    /*
     for(int i = 0; i < G.vexnum; i++){
         visited[i] = false;
     }
     int Vnum = 0, Enum = 0;
 
-    DFS(G, 0, Vum, Enum);
+    DFS(G, 0, Vnum, Enum);
 
     if(Vnum == G.vexnum && Enum == V.num - 1){
         return true;
@@ -205,10 +219,13 @@ bool isTree(Graph G){
     else{
         return false;
     }
+    */
+    return false;
 }
 
 
 void BFS(Graph& G, int v, int &Vnum, int &Enum, int visited[]){
+    /*
     visited[v] = true;Vnum++;
     int w = FisrtNeighbor(G, v);
     while(w != 1){
@@ -218,6 +235,7 @@ void BFS(Graph& G, int v, int &Vnum, int &Enum, int visited[]){
         }
         w = NextNeighbor(G, v, w);
     }
+    */
 }
 
 
@@ -280,6 +298,7 @@ SqStack S;
 
 void DFS_Non_RC(ALGraph &G, int v){
     int w;
+    int k;
     InitStack(S);
     for(int i = 0;i < G.vexnum; i++){
         visited[i] = false;
@@ -288,7 +307,7 @@ void DFS_Non_RC(ALGraph &G, int v){
     Push(S, v);visited[v] = true;
 
     while(StackEmpty(S)){
-        k = Pop(S);
+        Pop(S, k);
         visit(k);
         for(int w = FisrtNeighbor(G, v); w >= 0; w = NextNeighbor(G, v, w)){
             if(!visited[w]){
@@ -300,18 +319,36 @@ void DFS_Non_RC(ALGraph &G, int v){
 }
 
 
+bool Exist_Path_DFS(ALGraph G, int i, int j){
+    int p;
+    if(i == j){
+        return true;
+    }
+    else{
+        visited[i] = true;
+        for(p = FisrtNeighbor(G, i);p >= 0;p = NextNeighbor(G, i, p)){
+            if(!visited[p] && Exist_Path_DFS(G, p, j)){
+                return true;
+            }
+
+        }
+
+    }
+    return false;
+}
 
 
+/*
+NEW WORLD!
+*/
 
+vector <int> g[MaxSize];
 
+n = 10;
 
+vector < vector <int> > m(n, vertor<int>(n, 0));
 
-
-
-
-
-
-
+void FindPath(vector <int>)
 
 
 
