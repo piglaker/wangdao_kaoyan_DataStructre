@@ -348,7 +348,10 @@ n = 10;
 
 vector < vector <int> > m(n, vertor<int>(n, 0));
 
-void FindPath(vector <int>)
+void FindPath(vector <int> g, int visited[], int target){
+    
+    
+}
 
 
 
