@@ -10,4 +10,9 @@ BiTree:BiTree.cpp
 	g++ BiTree.cpp -o BiTree.out
 Graph:Graph.cpp
 	g++ Graph.cpp -o Graph.out
+Sort:Sort.cpp
+	g++ Sort.cpp -o Sort.out
+note4:note4.cpp
+	g++ note4.cpp -o note4.out
+
 
