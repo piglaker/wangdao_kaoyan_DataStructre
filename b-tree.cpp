@@ -196,19 +196,95 @@ void delete_keys(b_tree *p, int x){
 }
 
 
+void delete_gates(b_tree *p, b_tree *x){
+	bool flag = false;
+	for(int i = 0;i < p->length;i++){
+		if(flag){
+			if(i+1 < p->length){
+				p->gate[i] = p->gate[i+1];
+			}
+		}
+
+		if(p->gate[i] == x){
+			p->gate[i] = p->gate[i+1];
+			flag = true;
+		}
+	}
+	p->content--;
+}
+
+
 void simple_delete(b_tree *p, int x){
 	delete_keys(p, x);
 }
 
 
-void delete_leaf(b_tree *leaf, int x){
+int delete_leaf(b_tree *p, int x){
+	if(p->length > m/2){
+		simple_delete(p, x);
+		return 0;
+	}	
+	else{
+		b_tree *father = p->parent;
+		int address = 0;
+		for(int i = 0;i < father->length - 1;i++){
+			if(father->keys[i+1] > x){
+				address = i;
+				break;	
+			}
+		}
+		
+		b_tree *left = (address < father->content) ? p->gate[address]:NULL;
+		b_tree *right = (address + 1 <  father->content) ? p->gate[address+1] : NULL;
 	
+		if(left->length > m/2){
+			int tmp;
+			tmp = father->keys[address];
+			father->keys[address] = left->keys[left->length-1];
+			simple_delete(p, x);
+			Append(p, tmp);
+			simple_delete(left, father->keys[address]);
+			return 0;
+		}
+	
+		else{
+			if(right->length > m/2){
+				int tmp;
+				tmp = father->keys[address];
+				father->keys[address] = right->keys[right->length-1];
+				simple_delete(p, x);
+				Append(p, tmp);
+				simple_delete(left, father->keys[address]);
+				return 0;
+			}		
+			else{
+				delete_gates(father, p);	
+				
+				if(left){
+					Append(left, father->keys[address]);		
+					simple_delete(father, address);
+				}
+				else{
+					Append(right, father->keys[address+1]);
+					simple_delete(father, address+1);
+				}
+					
+				return -1;
+			}
+	
+		}
+	}
+}
+
+void Merge(b_tree **node){
+
+
 
 }
 
 
 b_tree *check_around(b_tree *p, int x){
-	int k;
+	int k = 0;
 	for(int i = 0;i < p->length;i++){
 		if(p->keys[i] == x){
 			k = i;
@@ -253,23 +329,21 @@ int Delete(b_tree **root, int x){
 
 	if(p->content == 0){
 		delete_leaf(p, x);
+		Merge(&(p->parent));
 		return 0;
 	}
 	else{
 		
 		b_tree *brother = check_around(p, x);
-		if(brother!=NULL){
-			simple_delete(p, x);
-			Append(p, brother->keys[brother->length-1]);
-			delete_leaf(brother, brother->keys[brother->length-1]);
-		}
-
-			
+		if(brother==NULL){
+			brother = p->gate[p->content-1];
+		}	
+		simple_delete(p, x);
+		Append(p, brother->keys[brother->length-1]);
+		delete_leaf(brother, brother->keys[brother->length-1]);	
+		Merge(&(brother->parent));
+		return 0;	
 	}
-
-
-
-
 }
 
 
