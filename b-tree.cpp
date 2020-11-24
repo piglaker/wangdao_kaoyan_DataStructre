@@ -178,7 +178,96 @@ void Insert(b_tree **root, int x){
 }
 
 
-void Delete(b_tree *root, int x){
+void delete_keys(b_tree *p, int x){
+	bool flag = false;
+	for(int i = 0;i < p->length;i++){
+		if(flag){
+			if(i+1 < p->length){
+				p->keys[i] = p->keys[i+1];
+			}
+		}
+
+		if(p->keys[i] == x){
+			p->keys[i] = p->keys[i+1];
+			flag = true;
+		}
+	}
+	p->length--;
+}
+
+
+void simple_delete(b_tree *p, int x){
+	delete_keys(p, x);
+}
+
+
+void delete_leaf(b_tree *leaf, int x){
+	
+
+}
+
+
+b_tree *check_around(b_tree *p, int x){
+	int k;
+	for(int i = 0;i < p->length;i++){
+		if(p->keys[i] == x){
+			k = i;
+			break;
+		}
+	}
+
+	if(p->content > k){
+		return p->gate[k];
+	}
+	else{
+		return NULL;
+	}
+
+}
+
+
+bool view(b_tree *p, int x){
+	for(int i = 0;i < p->length;i++){
+		if(p->keys[i] == x){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+int Delete(b_tree **root, int x){
+	
+	b_tree *p = search(*root, x);
+
+	if(!view(p, x)){
+		printf("KEYS:%d  NOT IN B-TREE!\n", x);
+		printf("DELETE ABORT!\n");
+		return 1;		
+	}
+
+	if(p->length - 1 > m/2 ){
+		simple_delete(p, x);
+		return 0;
+	}
+
+	if(p->content == 0){
+		delete_leaf(p, x);
+		return 0;
+	}
+	else{
+		
+		b_tree *brother = check_around(p, x);
+		if(brother!=NULL){
+			simple_delete(p, x);
+			Append(p, brother->keys[brother->length-1]);
+			delete_leaf(brother, brother->keys[brother->length-1]);
+		}
+
+			
+	}
+
+
 
 
 }
