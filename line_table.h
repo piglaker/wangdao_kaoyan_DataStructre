@@ -244,13 +244,13 @@ int mid_of_couple(SqList a, SqList b){
 	int flag = 0;
 	for(int i = 0; i < path;i++)
 	{
-		if(p1 = a.length - 1)
+		if(p1 == a.length - 1)
 		{
 			p2++;
 			flag = 1;	
 		}
 		else{
-			if(p2 = b.length - 1){
+			if(p2 == b.length - 1){
 				p1++;
 				flag = 2;
 			}

@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 
+using namespace std;
 
 #define MaxVertexNum 100
 #define TOP 2147483647
@@ -344,9 +345,9 @@ NEW WORLD!
 
 vector <int> g[MaxSize];
 
-n = 10;
+int n = 10;
 
-vector < vector <int> > m(n, vertor<int>(n, 0));
+vector < vector <int> > m(n, vector<int>(n, 0));
 
 void FindPath(vector <int> g, int visited[], int target){
     
